@@ -8,7 +8,7 @@ totalram=$(free -h | awk 'NR==2 {print $2}')
 usedram=$(free -h | awk 'NR==2 {print $3}')
 freeram=$(free -h | awk 'NR==2 {print $4}')
 
-## Network variables
+## Networking variables
 private_ip=$(hostname -I | awk '{print $1}')
 public_ip=$(dig +short myip.opendns.com @resolver1.opendns.com | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}")
 net_iface_status=$(nmcli device status)
@@ -17,7 +17,7 @@ net_iface_status=$(nmcli device status)
 df_header=$(df -h | sed -u 1q | awk '{ print $1,"\t"$2,"\t"$3,"\t"$4"\t"$5,"\t"$6 }')
 
 # Author and message about version 
-echo -e "\033[31mAttention: this script is in alpha version!\033[0m"
+echo -e "\033[31mAttention this script is in alpha version\033[0m"
 echo -e "\033[32m$0-$version\033[0m by Volodymyr Markiv"
 
 ## Show system general info
@@ -72,7 +72,7 @@ else echo "unknown OS"
 fi
 
 ## Show network information
-echo -e "\033[32;47;1m                           NETWORKING                         \033[0m"
+echo -e "\033[32;47;1m                           NETWORKING                          \033[0m"
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo

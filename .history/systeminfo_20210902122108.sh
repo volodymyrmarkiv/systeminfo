@@ -17,7 +17,7 @@ net_iface_status=$(nmcli device status)
 df_header=$(df -h | sed -u 1q | awk '{ print $1,"\t"$2,"\t"$3,"\t"$4"\t"$5,"\t"$6 }')
 
 # Author and message about version 
-echo -e "\033[31mAttention: this script is in alpha version!\033[0m"
+echo -e "\033[31mAttention this script is in alpha version\033[0m"
 echo -e "\033[32m$0-$version\033[0m by Volodymyr Markiv"
 
 ## Show system general info
