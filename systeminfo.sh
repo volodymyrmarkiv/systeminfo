@@ -14,7 +14,7 @@ net_iface_status=$(nmcli device status)
 df_header=$(df -h | sed -u 1q | awk '{ print $1,"\t"$2,"\t"$3,"\t"$4"\t"$5,"\t"$6 }')
 
 ## Show system general info
-echo -e "\033[32;47;1m#################### GENERAL INFO #####################\033[0m"
+echo -e "\033[32;47;1m                         GENERAL INFO                         \033[0m"
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo
@@ -34,7 +34,7 @@ elif [[ $OSTYPE == "darwin"* ]]; then
 fi
 
 ## Show RAM information
-echo -e "\033[32;47;1m###################### RAM INFO #######################\033[0m"
+echo -e "\033[32;47;1m                           RAM INFO                           \033[0m"
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo
@@ -49,7 +49,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 ## Show disk information
-echo -e "\033[32;47;1m##################### DISK INFO #######################\033[0m"
+echo -e "\033[32;47;1m                           DISK INFO                          \033[0m"
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo
@@ -65,7 +65,7 @@ else echo "unknown OS"
 fi
 
 ## Show network information
-echo -e "\033[32;47;1m##################### NETWORKING ######################\033[0m"
+echo -e "\033[32;47;1m                           NETWORKING                          \033[0m"
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo
