@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Version info
-version=0.0.1
+version=0.1.1
 
 ## RAM variables
 totalram=$(free -h | awk 'NR==2 {print $2}')
@@ -11,7 +11,7 @@ freeram=$(free -h | awk 'NR==2 {print $4}')
 ## Network variables
 private_ip=$(hostname -I | awk '{print $1}')
 public_ip=$(dig +short myip.opendns.com @resolver1.opendns.com | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}")
-net_iface_status=$(nmcli device status)
+net_iface_status_header=$(nmcli device status | sed -u 1q )
 
 ## Disk variables
 df_header=$(df -h | sed -u 1q | awk '{ print $1,"\t"$2,"\t"$3,"\t"$4"\t"$5,"\t"$6 }')
@@ -80,7 +80,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo -e "\033[37;1mPublic IP:  \033[0m\033[37m$public_ip\033[0m"
     echo
     echo -e "\033[37;1mNetwork interface status:\033[0m"
-    $net_iface_status | sed -u 1q | awk #< make separate header and body
+    echo -e "\033[30;47;1m$net_iface_status_header\033[0m"
     echo
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     echo
