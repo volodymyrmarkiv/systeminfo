@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Version info
-version=0.2.1
+version=0.1.1
 
 ## RAM variables
 totalram=$(free -h | awk 'NR==2 {print $2}')
@@ -81,7 +81,9 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo
     echo -e "\033[37;1mNetwork interface status:\033[0m"
     echo -e "\033[30;47;1m$nmcli_header\033[0m" # << продовжити тут. Додати тест на перевірку наявності nmcli
-    nmcli device status | grep -e "lo" -e "enp*" -e "eth*"
+    nmcli device status | grep "enp*"
+    nmcli device status | grep "eth*"
+    nmcli device status | grep "lo"
     echo
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     echo
