@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Version info
-version=0.2.1
+version=0.2.2
 
 ## RAM variables
 totalram=$(free -h | awk 'NR==2 {print $2}')
