@@ -17,7 +17,7 @@ nmcli_header=$(nmcli device status | sed -u 1q )
 df_header=$(df -h | sed -u 1q | awk '{ print $1,"\t"$2,"\t"$3,"\t"$4"\t"$5,"\t"$6 }')
 
 # Author and message about version 
-echo -e "\033[31mAttention: this script is in alpha version!\033[0m"
+echo -e "\033[31mAttention this script is in alpha version!\033[0m"
 echo -e "\033[32m$0-$version\033[0m by Volodymyr Markiv"
 
 ## Show system general info
@@ -29,6 +29,8 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo -e "\033[1mOS type:  \033[0m$(uname -o)"
     ## Show distributive name
     echo -e "\033[1mOS:       \033[0m$(grep '^PRETTY_NAME' /etc/os-release | awk -F "\"" '{ print $2 }')"
+    ## Distributive name (alternative):
+    ## echo -e "\033[1mOS:       \033[0m$(( lsb_release -ds || cat /etc/*release || uname -om ) 2>/dev/null | head -n1)
     ## Show OS version
     echo -e "\033[1mVersion:  \033[0m$(grep -w '^VERSION' /etc/os-release | awk -F "\"" '{ print $2 }')"
     ## Show kernel version
@@ -79,12 +81,19 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo -e "\033[37;1mPrivate IP: \033[0m\033[0;37m$private_ip\033[0m"
     echo -e "\033[37;1mPublic IP:  \033[0m\033[37m$public_ip\033[0m"
     echo
-    echo -e "\033[37;1mNetwork interface status:\033[0m"
-    echo -e "\033[30;47;1m$nmcli_header\033[0m" # << продовжити тут. Додати тест на перевірку наявності nmcli
-    nmcli device status | grep -e "lo" -e "enp*" -e "eth*"
+
+    if [ -f /usr/bin/nmcliq ]; then
+        echo -e "\033[37;1mNetwork interface status:\033[0m"
+        echo -e "\033[30;47;1m$nmcli_header\033[0m"
+        nmcli device status | grep -e "lo" -e "enp*" -e "eth*"
+    else echo -e "Please install \033[37;1mnetwork-manager\033[0m to see \033[37;1mNetwork interface status\033[0m section"
+         echo "In Debian/Ubuntu:"
+         echo "     sudo apt install network-manager"
+    fi
+    
     echo
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     echo
-    echo -e "\033[31;4mMacOS doesn't have free command. So \"RAM info\" is under development.\033[0m"
+    echo -e "\033[31;4mUnder development.\033[0m"
     echo
 fi
