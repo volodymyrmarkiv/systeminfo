@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Version info
-version=0.2.3
+VERSION=0.2.5
 
 ## RAM variables
 TOTALRAM=$(free -h | awk 'NR==2 {print $2}')
@@ -17,8 +17,8 @@ NMCLI_HEADER=$(nmcli device status | sed -u 1q )
 DF_HEADER=$(df -h | sed -u 1q | awk '{ print $1,"\t"$2,"\t"$3,"\t"$4"\t"$5,"\t"$6 }')
 
 # Author and message about version 
-echo -e "\033[31mAttention this script is in alpha version!\033[0m"
-echo -e "\033[32m$0-$version\033[0m by Volodymyr Markiv"
+echo -e "\033[31mAttention, this is alpha version!\033[0m"
+echo -e "\033[32m$0-$VERSION\033[0m by Volodymyr Markiv"
 
 ## Show system general info
 echo -e "\033[32;47;1m                         GENERAL INFO                         \033[0m"
@@ -65,11 +65,11 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     ## "df" header (first row) 
     echo -e "\033[30;47;1m$DF_HEADER\033[0m"
     ## "df" body (w/o header)
-    df -h | grep '/dev/[hsv]d[a-z]*' | sort | awk '{ print $1,"\t"$2,"\t"$3,"\t"$4"\t"$5,"\t"$6 }'
+    df -h | grep '^/dev/[hsv]d[a-z]' | sort | awk '{ print $1,"\t"$2,"\t"$3,"\t"$4"\t"$5,"\t"$6 }'
     echo
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     df -h | sed -u 1q | awk '{ print $1,"\t"$2,"\t"$3,"\t"$4"\t"$5,"\t"$9 }'
-    df -h | grep '/dev/disk*' | sort | awk '{ print $1,"\t"$2,"\t"$3,"\t"$4"\t"$5,"\t"$9 }'
+    df -h | grep '^/dev/disk' | sort | awk '{ print $1,"\t"$2,"\t"$3,"\t"$4"\t"$5,"\t"$9 }'
 else echo "unknown OS"
 fi
 
@@ -77,16 +77,27 @@ fi
 echo -e "\033[32;47;1m                           NETWORKING                         \033[0m"
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    echo
-    echo -e "\033[37;1mPrivate IP: \033[0m\033[0;37m$PRIVATE_IP\033[0m"
-    echo -e "\033[37;1mPublic IP:  \033[0m\033[37m$PUBLIC_IP\033[0m"
-    echo
+    if [[ -f /usr/bin/hostname ]]; then
+        echo
+        echo -e "\033[37;1mPrivate IP:\033[0m \033[0;37m$PRIVATE_IP\033[0m"
+    else echo
+         echo -e "\033[37;1mPrivate IP:\033[0m \033[31m'hostname' not found, please install it first.\033[0m"
+    fi
 
-    if [[ -f /usr/bin/nmcliq ]]; then
+    if [[ -f /usr/bin/dig ]]; then
+        echo -e "\033[37;1mPublic IP:\033[0m  \033[37m$PUBLIC_IP\033[0m"
+        echo    
+    else echo -e "\033[37;1mPublic IP:\033[0m \033[31m'dig' not found, please install it first.\033[0m"
+         echo
+    fi 
+
+    if [[ -f /usr/bin/nmcli ]]; then
         echo -e "\033[37;1mNetwork interface status:\033[0m"
         echo -e "\033[30;47;1m$NMCLI_HEADER\033[0m"
         nmcli device status | grep -e 'lo' -e 'enp*' -e 'eth*'
-    else echo -e "Please install \033[37;1mnetwork-manager\033[0m to see \033[37;1mNetwork interface status\033[0m section"
+    else echo -e "\033[37;1mNetwork interface status:\033[0m"
+         echo -e "\033[31m'nmcli' not found, please install it first.\033[0m"
+         #echo -e "Please install \033[37;1mnetwork-manager\033[0m to see \033[37;1mNetwork interface status\033[0m section"
          #echo "In Debian/Ubuntu:"
          #echo "     sudo apt install network-manager"
         if [ -f /etc/os-release ]; then   # << Resume from here | Detect distro and show message about installation network manager
