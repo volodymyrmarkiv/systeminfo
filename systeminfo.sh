@@ -106,6 +106,7 @@ disk_info() {
         echo -e "\033[30;47;1m$DF_HEADER\033[0m"
         ## "df" body (w/o header)
         df -h | grep '^/dev/[hsv]d[a-z]' | sort | awk '{ print $1,"\t"$2,"\t"$3,"\t"$4"\t"$5,"\t"$6 }'
+        df -h | grep '^/dev/nvme' | sort | awk '{ print $1,"\t"$2,"\t"$3,"\t"$4"\t"$5,"\t"$6 }'
         echo
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         df -h | sed -u 1q | awk '{ print $1,"\t"$2,"\t"$3,"\t"$4"\t"$5,"\t"$9 }'
