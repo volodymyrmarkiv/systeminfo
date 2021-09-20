@@ -36,25 +36,6 @@ requairments_list_option() {
     usage
 }
 
-## Detect distributive and offer to install required software
-distr_detect() {
-    # for systemd-based distributives
-    if [ -f /etc/os-release ]; then
-        . /etc/os-release
-        OS=$NAME
-        ID_LIKE=$ANCESTOR
-    fi
-
-        
-    if [[ $NAME == "Debian GNU/Linux" ]] || [[ $ID_LIKE == "debian" ]]; then
-        echo "For $NAME || $ANCESTOR: sudo apt install $APP"
-    elif [[ $NAME == "Debian GNU/Linux" ]]; then
-        echo "For $NAME: sudo apt install $APP"
-    fi
-}
-
-distr_detect
-
 ## Show system general info
 general_info() {
     echo -e "\033[32;47;1m                         GENERAL INFO                         \033[0m"
@@ -106,7 +87,6 @@ disk_info() {
         echo -e "\033[30;47;1m$DF_HEADER\033[0m"
         ## "df" body (w/o header)
         df -h | grep '^/dev/[hsv]d[a-z]' | sort | awk '{ print $1,"\t"$2,"\t"$3,"\t"$4"\t"$5,"\t"$6 }'
-        df -h | grep '^/dev/nvme' | sort | awk '{ print $1,"\t"$2,"\t"$3,"\t"$4"\t"$5,"\t"$6 }'
         echo
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         df -h | sed -u 1q | awk '{ print $1,"\t"$2,"\t"$3,"\t"$4"\t"$5,"\t"$9 }'
@@ -125,10 +105,8 @@ network_info() {
             echo
             echo -e "\033[37;1mPrivate IP:\033[0m \033[0;37m$PRIVATE_IP\033[0m"
         else
-            APP=hostname
             echo
-            echo -e "\033[37;1mPrivate IP:\033[0m \033[31m'hostname' not found.\033[0m"
-            
+            echo -e "\033[37;1mPrivate IP:\033[0m \033[31m'hostname' not found, please install it first.\033[0m"
         fi
 
         if [[ -f /usr/bin/dig ]]; then
@@ -146,12 +124,40 @@ network_info() {
         else
             echo -e "\033[37;1mNetwork interface status:\033[0m"
             echo -e "\033[31m'nmcli' not found, please install it first.\033[0m"
+            #echo -e "Please install \033[37;1mnetwork-manager\033[0m to see \033[37;1mNetwork interface status\033[0m section"
+            #echo "In Debian/Ubuntu:"
+            #echo "     sudo apt install network-manager"
+            # if [ -f /etc/os-release ]; then   # << Resume from here | Detect distro and show message about installation network manager
+            #     # freedesktop.org and systemd
+            #     . /etc/os-release
+            #     OS=$NAME
+            #     echo -e "For \033[37;1mNetwork interface status:\033[0m"
+            # elif type lsb_release >/dev/null 2>&1; then
+            #     # linuxbase.org
+            #     OS=$(lsb_release -si)
+            #     VER=$(lsb_release -sr)
+            # elif [ -f /etc/lsb-release ]; then
+            #     # For some versions of Debian/Ubuntu without lsb_release command
+            #     . /etc/lsb-release
+            #     OS=$DISTRIB_ID
+            #     VER=$DISTRIB_RELEASE
+            # elif [ -f /etc/debian_version ]; then
+            #     # Older Debian/Ubuntu/etc.
+            #     OS=Debian
+            #     VER=$(cat /etc/debian_version)
+            # elif [ -f /etc/SuSe-release ]; then
+            #     # Older SuSE/etc.
+            #     ...
+            # elif [ -f /etc/redhat-release ]; then
+            #     # Older Red Hat, CentOS, etc.
+            #     ...
+            # else
+            #     # Fall back to uname, e.g. "Linux <version>", also works for BSD, etc.
+            #     OS=$(uname -s)
+            #     VER=$(uname -r)
+            # fi
 
         fi
-
-    # echo -e "Please install \033[37;1mnetwork-manager\033[0m to see \033[37;1mNetwork interface status\033[0m section"
-    # echo "In Debian/Ubuntu:"
-    # echo "     sudo apt install network-manager"
 
         echo
     elif [[ "$OSTYPE" == "darwin"* ]]; then
